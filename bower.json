@@ -24,6 +24,6 @@
     "tests"
   ],
   "dependencies": {
-    "br-masks": "*"
+    "br-masks": "~0.1.0"
   }
 }
