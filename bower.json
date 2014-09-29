@@ -1,0 +1,29 @@
+{
+  "name": "angular-br-filters",
+  "version": "0.1.0",
+  "homepage": "https://github.com/the-darc/angular-br-filters",
+  "authors": [
+    "Igor Rafael <igor.rafael@gmail.com>",
+    "Daniel Campos <darc.tec@gmail.com>"
+  ],
+  "main": "src/filters.js",
+  "keywords": [
+    "angular",
+    "filters",
+    "cpnj",
+    "cpf",
+    "cep",
+    "phone-number"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "br-masks": "~0.1.0"
+  }
+}
