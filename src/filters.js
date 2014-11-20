@@ -31,3 +31,18 @@ angular.module('idf.br-filters', [])
 		return BrM.ie(input,uf);
 	};
 }])
+.filter('finance', ['$locale', function($locale) {
+	return function(input, currency, decimals) {
+		var decimalDelimiter = $locale.NUMBER_FORMATS.DECIMAL_SEP,
+			thousandsDelimiter = $locale.NUMBER_FORMATS.GROUP_SEP,
+			currencySym = '';
+
+		if(currency === true) {
+			currencySym = $locale.NUMBER_FORMATS.CURRENCY_SYM + ' ';
+		} else if (currency) {
+			currencySym = currency;
+		}
+
+		return currencySym + BrM.finance(input, decimals, decimalDelimiter, thousandsDelimiter);
+	};
+}]);
