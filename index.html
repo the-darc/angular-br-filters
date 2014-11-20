@@ -6,6 +6,7 @@
     <title>Angular-br-filters by the-darc</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.2.5/angular-locale_pt-br.js"></script>
     <script src="javascripts/angular-br-filters.js"></script>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
@@ -45,7 +46,6 @@
           angular.module('demo', ['idf.br-filters']);
         </script>
         <div ng-app="demo">
-
           <p><strong>Percentage: </strong>{{'0.1' | percentage}}</p>
           <pre><code>'0.1' | percentage</code></pre>
 
@@ -59,15 +59,18 @@
           <pre><code>'97070868669' | brCpf</code></pre>
           <p><strong>Phone: </strong>{{'3133340167' | brPhoneNumber}}</p>
           <pre><code>'3133340167' | brPhoneNumber</code></pre>
-
+          <p><strong>Finance: </strong>{{-125.15 | finance:true:3}}</p>
+          <pre><code>-125.15 | finance:true:3</code></pre>
+          <em>
+            <ul>
+              <li>Parameters: finance:[currency (default false)]:[precision (default 2)]</li>
+              <li>Pass a String in the currency parameter to use as the currency symbol</li>
+              <li>Require <a href="https://github.com/angular/bower-angular-i18n">bower-angular-i18n</a> to work with default browser currency symbol</li>
+            </ul>
+          </em>
         </div>
 
       </section>
-
-
-
-
-
 
       <footer>
         <p>This project is maintained by <a href="https://github.com/the-darc">the-darc</a></p>

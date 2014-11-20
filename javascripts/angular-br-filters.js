@@ -1,7 +1,7 @@
 /**
  * angular-br-filters
- * angular-br-filters ==================
- * @version v0.1.0
+ * An Angular library of masks applicable to several Brazilian data.
+ * @version v0.2.0
  * @link https://github.com/the-darc/angular-br-filters
  * @license MIT
  */
@@ -11,7 +11,7 @@
 /**
  * br-masks
  * A library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
- * @version v0.1.0
+ * @version v0.2.1
  * @link http://github.com/the-darc/br-masks
  * @license MIT
  */
@@ -19,7 +19,7 @@
   var root = this;
 var StringMask = (function() {
 	var tokens = {
-		'0': {pattern: /\d/, default: '0'},
+		'0': {pattern: /\d/, _default: '0'},
 		'9': {pattern: /\d/, optional: true},
 		'#': {pattern: /\d/, optional: true, recursive: true},
 		'S': {pattern: /[a-zA-Z]/},
@@ -153,8 +153,8 @@ var StringMask = (function() {
 				} else if (token.pattern.test(vc)) {
 					formatted = concatChar(formatted, vc, this.options);
 					valuePos = valuePos + steps.inc;
-				} else if (!vc && token.default && this.options.usedefaults) {
-					formatted = concatChar(formatted, token.default, this.options);
+				} else if (!vc && token._default && this.options.usedefaults) {
+					formatted = concatChar(formatted, token._default, this.options);
 				} else {
 					valid = false;
 					break;
@@ -206,6 +206,7 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported CEP */
 var CEP = function(value) {
 	var cepMask = new StringMask('00000-000');
 	if(!value) {
@@ -219,6 +220,7 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported CNPJ */
 var CNPJ = function(value) {
 	if(!value) {
 		return value;
@@ -232,6 +234,7 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported CPF */
 var CPF = function(value) {
 	var cpfPattern = new StringMask('000.000.000-00');
 	if(!value) {
@@ -245,6 +248,35 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported FINANCE */
+var FINANCE = function(value, precision, decimalSep, groupSep) {
+	precision = (!precision && precision !== 0) || precision < 0? 2 : precision;
+	decimalSep = decimalSep || '.';
+	groupSep = groupSep || '';
+
+	var decimalsPattern = precision > 0 ? decimalSep + new Array(precision + 1).join('0') : '';
+	var maskPattern = '#'+groupSep+'##0'+decimalsPattern;
+
+	value = parseFloat(value);
+	if (!value) {
+		value = 0;
+	}
+
+	var negative = false;
+	if (value < 0) {
+		value = value * -1;
+		negative = true;
+	}
+	var financeMask = new StringMask(maskPattern, {reverse: true});
+	var masked = financeMask.apply(value.toFixed(precision).replace(/[^\d]+/g,''));
+	return negative ? '('+masked+')' : masked;
+};
+
+if (typeof require === 'function') {
+	var StringMask = require('string-mask');
+}
+
+/*exported IE */
 var IE = function(value, uf) {
 	var ieMasks = {
 		'AC': [{mask: new StringMask('00.000.000/000-00')}],
@@ -319,6 +351,7 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported PHONE */
 var PHONE = function(value) {
 	var phoneMask8D = new StringMask('(00) 0000-0000'),
 		phoneMask9D = new StringMask('(00) 00000-0000');
@@ -342,7 +375,8 @@ var BrM = {
    cpf: CPF,
    cnpj: CNPJ,
    phone: PHONE,
-   cep: CEP
+   cep: CEP,
+   finance: FINANCE
 };
 var objectTypes = {
 	'function': true,
@@ -359,7 +393,6 @@ if (objectTypes[typeof module]) {
 angular.module('idf.br-filters', [])
 .filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
-		decimals = decimals || 2;
 		return $filter('number')(input*100, decimals)+'%';
 	};
 }])
@@ -388,5 +421,20 @@ angular.module('idf.br-filters', [])
 		return BrM.ie(input,uf);
 	};
 }])
+.filter('finance', ['$locale', function($locale) {
+	return function(input, currency, decimals) {
+		var decimalDelimiter = $locale.NUMBER_FORMATS.DECIMAL_SEP,
+			thousandsDelimiter = $locale.NUMBER_FORMATS.GROUP_SEP,
+			currencySym = '';
+
+		if(currency === true) {
+			currencySym = $locale.NUMBER_FORMATS.CURRENCY_SYM + ' ';
+		} else if (currency) {
+			currencySym = currency;
+		}
+
+		return currencySym + BrM.finance(input, decimals, decimalDelimiter, thousandsDelimiter);
+	};
+}]);
 
 })(angular);
