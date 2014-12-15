@@ -1,3 +1,5 @@
+[![Bower version](https://badge.fury.io/bo/angular-br-filters.svg)](http://badge.fury.io/bo/angular-br-filters)
+
 angular-br-filters
 ==================
 
