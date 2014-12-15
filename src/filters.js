@@ -1,5 +1,6 @@
 'use strict';
 
+/*globals BrM */
 angular.module('idf.br-filters', [])
 .filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
@@ -44,5 +45,10 @@ angular.module('idf.br-filters', [])
 		}
 
 		return currencySym + BrM.finance(input, decimals, decimalDelimiter, thousandsDelimiter);
+	};
+}])
+.filter('nfeAccessKey', [function() {
+	return function(input) {
+		return BrM.nfeAccessKey(input);
 	};
 }]);

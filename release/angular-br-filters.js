@@ -1,7 +1,7 @@
 /**
  * angular-br-filters
  * An Angular library of masks applicable to several Brazilian data.
- * @version v0.2.0
+ * @version v0.3.0
  * @link https://github.com/the-darc/angular-br-filters
  * @license MIT
  */
@@ -11,7 +11,7 @@
 /**
  * br-masks
  * A library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
- * @version v0.2.1
+ * @version v0.3.0
  * @link http://github.com/the-darc/br-masks
  * @license MIT
  */
@@ -351,6 +351,22 @@ if (typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
+/*exported NFEACCESSKEY */
+var NFEACCESSKEY = function(value) {
+	if(!value) {
+		return value;
+	}
+
+	var maskPattern = '0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000';
+	var nfeMask = new StringMask(maskPattern);
+	var formatedValue = nfeMask.apply(value);
+	return formatedValue;
+};
+
+if (typeof require === 'function') {
+	var StringMask = require('string-mask');
+}
+
 /*exported PHONE */
 var PHONE = function(value) {
 	var phoneMask8D = new StringMask('(00) 0000-0000'),
@@ -376,7 +392,8 @@ var BrM = {
    cnpj: CNPJ,
    phone: PHONE,
    cep: CEP,
-   finance: FINANCE
+   finance: FINANCE,
+   nfeAccessKey: NFEACCESSKEY
 };
 var objectTypes = {
 	'function': true,
@@ -390,6 +407,7 @@ if (objectTypes[typeof module]) {
 }.call(this));
 'use strict';
 
+/*globals BrM */
 angular.module('idf.br-filters', [])
 .filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
@@ -434,6 +452,11 @@ angular.module('idf.br-filters', [])
 		}
 
 		return currencySym + BrM.finance(input, decimals, decimalDelimiter, thousandsDelimiter);
+	};
+}])
+.filter('nfeAccessKey', [function() {
+	return function(input) {
+		return BrM.nfeAccessKey(input);
 	};
 }]);
 
