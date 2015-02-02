@@ -1,6 +1,6 @@
 {
   "name": "angular-br-filters",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An Angular library of masks applicable to several Brazilian data.",
   "main": "src/filters.js",
   "scripts": {
