@@ -202,7 +202,7 @@ if (objectTypes[typeof module]) {
 	module.exports = StringMask;	
 }
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -216,7 +216,7 @@ var CEP = function(value) {
 	return processed.result;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -230,7 +230,7 @@ var CNPJ = function(value) {
 	return formatedValue;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -244,7 +244,7 @@ var CPF = function(value) {
 	return formatedValue;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -272,7 +272,7 @@ var FINANCE = function(value, precision, decimalSep, groupSep) {
 	return negative ? '('+masked+')' : masked;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -347,7 +347,7 @@ var IE = function(value, uf) {
 	return processed.result;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
@@ -363,7 +363,7 @@ var NFEACCESSKEY = function(value) {
 	return formatedValue;
 };
 
-if (typeof require === 'function') {
+if (!StringMask && typeof require === 'function') {
 	var StringMask = require('string-mask');
 }
 
