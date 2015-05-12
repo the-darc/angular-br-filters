@@ -1,10 +1,14 @@
 'use strict';
 
-/*globals BrM */
+/*globals angular,BrM */
 angular.module('idf.br-filters', [])
 .filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
-		return $filter('number')(input*100, decimals)+'%';
+		if (angular.isUndefined(input) || input === null) {
+			return input;
+		}
+
+		return $filter('number')(input * 100, decimals) + '%';
 	};
 }])
 .filter('brCep', [function() {
@@ -34,6 +38,10 @@ angular.module('idf.br-filters', [])
 }])
 .filter('finance', ['$locale', function($locale) {
 	return function(input, currency, decimals) {
+		if (angular.isUndefined(input) || input === null) {
+			return input;
+		}
+
 		var decimalDelimiter = $locale.NUMBER_FORMATS.DECIMAL_SEP,
 			thousandsDelimiter = $locale.NUMBER_FORMATS.GROUP_SEP,
 			currencySym = '';
