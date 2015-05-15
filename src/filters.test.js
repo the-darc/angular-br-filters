@@ -93,9 +93,12 @@ describe('br-filters', function() {
 			expect(testFilter('brIe')(undefined)).toBe(undefined);
 		});
 
-		it('should format a string or a number', function() {
+		it('should not format a number', function() {
+			expect(testFilter('brIe')(032141840, 'PE')).toBe(32141840);
+		});
+
+		it('should format a string', function() {
 			expect(testFilter('brIe')('032141840', 'PE')).toBe('0321418-40');
-			expect(testFilter('brIe')(032141840, 'PE')).toBe('0321418-40');
 		});
 	});
 
@@ -106,8 +109,8 @@ describe('br-filters', function() {
 		});
 
 		it('should format a string or a number', function() {
-			expect(testFilter('finance')('123.1237123', 3)).toBe('123.124');
-			expect(testFilter('finance')(123.1237123, 3)).toBe('123.124');
+			expect(testFilter('finance')('123.1237123', '$ ', 3)).toBe('$ 123.124');
+			expect(testFilter('finance')(123.1237123, 'R$ ', 3)).toBe('R$ 123.124');
 		});
 	});
 
