@@ -1,7 +1,7 @@
 /**
  * angular-br-filters
  * An Angular library of masks applicable to several Brazilian data.
- * @version v0.3.1
+ * @version v0.4.0
  * @link https://github.com/the-darc/angular-br-filters
  * @license MIT
  */
@@ -204,7 +204,7 @@
 /**
  * br-masks
  * A library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
- * @version v0.3.3
+ * @version v0.4.0
  * @link http://github.com/the-darc/br-masks
  * @license MIT
  */
@@ -245,6 +245,18 @@ var CNPJ = function(value) {
 	return formatedValue;
 };
 
+/*exported CPFCNPJ */
+/*globals CPF, CNPJ*/
+var CPFCNPJ = function(value) {
+	if (!value || !value.length) {
+		return value;
+	} else if (value.length <= 11) {
+		return CPF(value);
+	} else {
+		return CNPJ(value);
+	}
+};
+
 /*exported CPF */
 var CPF = function(value) {
 	var cpfPattern = new StringMask('000.000.000-00');
@@ -281,6 +293,10 @@ var FINANCE = function(value, precision, decimalSep, groupSep) {
 
 /*exported IE */
 var IE = function(value, uf) {
+	if (!value || typeof value !== 'string') {
+		return value;
+	}
+
 	var ieMasks = {
 		'AC': [{mask: new StringMask('00.000.000/000-00')}],
 		'AL': [{mask: new StringMask('000000000')}],
@@ -316,10 +332,6 @@ var IE = function(value, uf) {
 	};
 
 	function clearValue (value) {
-		if(!value) {
-			return value;
-		}
-
 		return value.replace(/[^0-9]/g, '');
 	}
 
@@ -340,7 +352,7 @@ var IE = function(value, uf) {
 	}
 
 	var mask = getMask(uf, value);
-	if(!value || !mask) {
+	if(!mask) {
 		return value;
 	}
 	var processed = mask.process(clearValue(value));
@@ -372,6 +384,7 @@ var PHONE = function(value) {
 	}
 
 	var formatedValue;
+	value = value + '';
 	if(value.length < 11){
 		formatedValue = phoneMask8D.apply(value);
 	}else{
@@ -388,7 +401,8 @@ var PHONE = function(value) {
 		phone: PHONE,
 		cep: CEP,
 		finance: FINANCE,
-		nfeAccessKey: NFEACCESSKEY
+		nfeAccessKey: NFEACCESSKEY,
+		cpfCnpj: CPFCNPJ
 	};
 }));
 'use strict';
@@ -422,6 +436,11 @@ angular.module('idf.br-filters', [])
 .filter('brCnpj', [function() {
 	return function(input) {
 		return BrM.cnpj(input);
+	};
+}])
+.filter('brCpfCnpj', [function() {
+	return function(input) {
+		return BrM.cpfCnpj(input);
 	};
 }])
 .filter('brIe', [function() {

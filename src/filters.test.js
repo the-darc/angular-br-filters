@@ -87,6 +87,19 @@ describe('br-filters', function() {
 		});
 	});
 
+	describe('brCpfCnpj', function () {
+		it('should not format if null or undefined', function() {
+			expect(testFilter('brCpfCnpj')(null)).toBe(null);
+			expect(testFilter('brCpfCnpj')(undefined)).toBe(undefined);
+		});
+
+		it('should format a string or a number', function() {
+			expect(testFilter('brCpfCnpj')('97070868669')).toBe('970.708.686-69');
+			expect(testFilter('brCpfCnpj')('1435151')).toBe('143.515.1');
+			expect(testFilter('brCpfCnpj')('10157471000161')).toBe('10.157.471/0001-61');
+		});
+	});
+
 	describe('brIe', function () {
 		it('should not format if null or undefined', function() {
 			expect(testFilter('brIe')(null)).toBe(null);
@@ -111,6 +124,8 @@ describe('br-filters', function() {
 		it('should format a string or a number', function() {
 			expect(testFilter('finance')('123.1237123', '$ ', 3)).toBe('$ 123.124');
 			expect(testFilter('finance')(123.1237123, 'R$ ', 3)).toBe('R$ 123.124');
+			expect(testFilter('finance')(123.1237123, true)).toMatch(/.+ 123.12/);
+			expect(testFilter('finance')(0)).toMatch(/0.00/);
 		});
 	});
 

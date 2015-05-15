@@ -31,6 +31,11 @@ angular.module('idf.br-filters', [])
 		return BrM.cnpj(input);
 	};
 }])
+.filter('brCpfCnpj', [function() {
+	return function(input) {
+		return BrM.cpfCnpj(input);
+	};
+}])
 .filter('brIe', [function() {
 	return function(input, uf) {
 		return BrM.ie(input,uf);
