@@ -25,6 +25,6 @@
     "tests"
   ],
   "dependencies": {
-    "br-masks": "~0.3.1"
+    "br-masks": "~0.3.2"
   }
 }
