@@ -1,18 +1,21 @@
 var gulp = require('gulp'),
 	path = require('path'),
+	karma = require('karma').server,
 	jshintReporter = require('jshint-stylish'),
+	pkg = require(path.join(__dirname, 'package.json')),
 	plugins = require('gulp-load-plugins')({
 		config: path.join(__dirname, 'package.json')
-	});
+	}),
+	fs = require('fs');
 
-var path = {
+var config = {
 	src: {
 		files: 'src/**/*.js'
 	}
-}
+};
 
 gulp.task('jshint', function(done) {
-	gulp.src(path.src.files)
+	gulp.src(config.src.files)
 	.pipe(plugins.jshint('.jshintrc'))
 	.pipe(plugins.jshint.reporter(jshintReporter));
 	done();
@@ -39,7 +42,7 @@ gulp.task('build', function() {
 		''].join('\n');
 
 	gulp.src([
-		'bower_components/br-masks/releases/br-masks.js',
+		'bower_components/br-masks/releases/br-masks-standalone.js',
 		'src/filters.js'
 	])
 	.pipe(plugins.concat('angular-br-filters.js'))
@@ -52,5 +55,33 @@ gulp.task('build', function() {
 });
 
 gulp.task('default', ['jshint', 'build'], function() {
-	gulp.watch(path.src.files, ['jshint', 'build']);
+	gulp.watch(config.src.files, ['jshint', 'build']);
 });
+
+gulp.task('test', function(done) {
+	var karmaConfig = {
+		singleRun: true,
+		configFile: __dirname + '/config/karma.conf.js'
+	};
+
+	karma.start(karmaConfig, done);
+});
+
+gulp.task('changelog', function(done) {
+	var changelog = require('conventional-changelog');
+
+	var options = {
+		repository: pkg.homepage,
+		version: pkg.version,
+		file: path.join(__dirname, 'CHANGELOG.md')
+	};
+
+	changelog(options, function(err, log) {
+		if (err) {
+			throw err;
+		}
+
+		fs.writeFile(options.file, log, done);
+	});
+});
+
