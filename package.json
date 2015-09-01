@@ -29,23 +29,32 @@
     "url": "https://github.com/the-darc/angular-br-filters/issues"
   },
   "homepage": "https://github.com/the-darc/angular-br-filters",
+  "dependencies": {
+    "br-masks": "^0.4.0"
+  },
   "devDependencies": {
     "angular": "^1.3.15",
     "angular-mocks": "^1.3.15",
+    "browserify": "^11.0.1",
+    "browserify-istanbul": "^0.2.1",
     "conventional-changelog": "0.0.17",
     "gulp": "^3.8.8",
-    "gulp-concat": "^2.4.1",
+    "gulp-concat": "^2.6.0",
     "gulp-footer": "^1.0.5",
     "gulp-header": "^1.1.1",
     "gulp-jshint": "^1.9.0",
     "gulp-load-plugins": "^0.6.0",
+    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.0.1",
     "jasmine-core": "^2.3.2",
     "jshint-stylish": "^1.0.0",
     "karma": "^0.12.31",
+    "karma-browserify": "^4.3.0",
     "karma-chrome-launcher": "^0.1.10",
     "karma-coverage": "^0.3.1",
     "karma-coveralls": "^0.1.5",
-    "karma-jasmine": "^0.3.5"
+    "karma-jasmine": "^0.3.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

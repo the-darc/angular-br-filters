@@ -1,8 +1,10 @@
-'use strict';
+var BrM = require('br-masks');
 
-/*globals angular,BrM */
-angular.module('idf.br-filters', [])
-.filter('percentage', ['$filter', function($filter) {
+var m = angular.module('idf.br-filters', []);
+
+module.exports = m.name;
+
+m.filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
 		if (angular.isUndefined(input) || input === null) {
 			return input;

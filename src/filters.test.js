@@ -1,6 +1,8 @@
+require('./filters.js');
+
 /* global expect,inject,beforeEach,it,describe */
 describe('br-filters', function() {
-	beforeEach(module('idf.br-filters'));
+	beforeEach(angular.mock.module('idf.br-filters'));
 
 	function testFilter(name) {
 		var filter;
@@ -107,7 +109,7 @@ describe('br-filters', function() {
 		});
 
 		it('should not format a number', function() {
-			expect(testFilter('brIe')(032141840, 'PE')).toBe(32141840);
+			expect(testFilter('brIe')(32141840, 'PE')).toBe(32141840);
 		});
 
 		it('should format a string', function() {
