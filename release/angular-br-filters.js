@@ -4,10 +4,7 @@
  * @version v0.4.0
  * @link https://github.com/the-darc/angular-br-filters
  * @license MIT
- */
-(function (angular) {
-	var global = {};
-
+ */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -201,6 +198,7 @@
 	return StringMask;
 }));
 
+},{}],2:[function(require,module,exports){
 /**
  * br-masks
  * A library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
@@ -405,11 +403,14 @@ var PHONE = function(value) {
 		cpfCnpj: CPFCNPJ
 	};
 }));
-'use strict';
+},{"string-mask":1}],3:[function(require,module,exports){
+var BrM = require('br-masks');
 
-/*globals angular,BrM */
-angular.module('idf.br-filters', [])
-.filter('percentage', ['$filter', function($filter) {
+var m = angular.module('idf.br-filters', []);
+
+module.exports = m.name;
+
+m.filter('percentage', ['$filter', function($filter) {
 	return function(input, decimals) {
 		if (angular.isUndefined(input) || input === null) {
 			return input;
@@ -473,4 +474,4 @@ angular.module('idf.br-filters', [])
 	};
 }]);
 
-})(angular);
+},{"br-masks":2}]},{},[3]);
