@@ -10,10 +10,16 @@ An Angular library of masks applicable to several Brazilian data like I.E., CNPJ
 Installation
 ------------
 
-With Bower:
+**With Bower:**
 
 ```
 bower install --save angular-br-filters
+```
+
+**With NPM:**
+
+```
+npm install --save angular-br-filters
 ```
 
 How to use
