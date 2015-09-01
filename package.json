@@ -39,6 +39,8 @@
     "browserify-istanbul": "^0.2.1",
     "conventional-changelog": "0.0.17",
     "gulp": "^3.8.8",
+    "gulp-concat": "^2.6.0",
+    "gulp-footer": "^1.0.5",
     "gulp-header": "^1.1.1",
     "gulp-jshint": "^1.9.0",
     "gulp-load-plugins": "^0.6.0",
