@@ -1,17 +1,23 @@
 module.exports = function(config) {
 	var configuration = {
 		basePath: __dirname + '/..',
-		frameworks: ['jasmine'],
+		frameworks: ['browserify', 'jasmine'],
 		files: [
 			'node_modules/angular/angular.js',
 			'node_modules/angular-mocks/angular-mocks.js',
-			'bower_components/br-masks/releases/br-masks-standalone.js',
-			'src/**/*.js',
+			'src/**/*.test.js',
 		],
 		port: 9876,
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
+			'src/**/*.test.js': [ 'browserify' ],
 			'src/**/!(*spec|*test).js': ['coverage']
+		},
+		browserify: {
+			debug: true,
+			transform: [require('browserify-istanbul')({
+				ignore: '**/*.test.js'
+			})]
 		},
 		coverageReporter: {
 			dir: 'coverage',
@@ -21,6 +27,10 @@ module.exports = function(config) {
 			}, {
 				type: 'html',
 				subdir: 'report-html'
+			}, {
+				type: 'text',
+			}, {
+				type: 'text-summary',
 			}]
 		},
 		colors: true,
