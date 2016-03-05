@@ -7,7 +7,7 @@
     "Igor Rafael <igor.rafael@gmail.com>",
     "Daniel Campos <darc.tec@gmail.com>"
   ],
-  "main": "src/filters.js",
+  "main": "release/angular-br-filters.js",
   "keywords": [
     "angular",
     "filters",
