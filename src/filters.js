@@ -53,7 +53,7 @@ m.filter('percentage', ['$filter', function($filter) {
 			thousandsDelimiter = $locale.NUMBER_FORMATS.GROUP_SEP,
 			currencySym = '';
 
-		if(currency === true) {
+		if (currency === true) {
 			currencySym = $locale.NUMBER_FORMATS.CURRENCY_SYM + ' ';
 		} else if (currency) {
 			currencySym = currency;
@@ -66,4 +66,27 @@ m.filter('percentage', ['$filter', function($filter) {
 	return function(input) {
 		return BrM.nfeAccessKey(input);
 	};
-}]);
+}])
+.filter('age', function() {
+	/**
+	 * @param value birthdate can be a date object or a time in milliseconds
+	 * return the age based on the birthdate or undefined if value is invalid.
+	 */
+	 return function calculateAge(value) {
+		 if (!value) {
+			 return undefined;
+		 }
+		 var isDateInstance = (value instanceof Date);
+		 var isValidType = isDateInstance || !isNaN(parseInt(value));
+		 if (!isValidType) {
+			 return undefined;
+		 }
+		 var birthdate = isDateInstance ? value : new Date(value);
+		 if (birthdate > new Date()) {
+			 return undefined;
+		 }
+		 var ageDifMs = Date.now() - birthdate.getTime();
+		 var ageDate = new Date(ageDifMs); // miliseconds from epoch
+		 return Math.abs(ageDate.getUTCFullYear() - 1970);
+	 };
+});
