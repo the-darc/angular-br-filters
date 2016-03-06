@@ -142,4 +142,36 @@ describe('br-filters', function() {
 				.toBe('3514 0111 7242 5800 0157 5500 1000 6882 1916 3038 6000');
 		});
 	});
+	describe('age', function() {
+		it('should be undefined if null, undefined or empty', function() {
+			expect(testFilter('age')(null)).toBe(undefined);
+			expect(testFilter('age')(undefined)).toBe(undefined);
+			expect(testFilter('age')('')).toBe(undefined);
+		});
+		
+		it('should be undefined if not date or time in milliseconds', function() {
+			expect(testFilter('age')('not a date')).toBe(undefined);
+			expect(testFilter('age')(true)).toBe(undefined);
+		});
+		
+		it('should be undefined for future birthdate', function() {
+			var futureYear = new Date();
+			futureYear.setFullYear(futureYear.getFullYear() + 1);
+			expect(testFilter('age')(futureYear)).toBe(undefined);
+			var futureMonth = new Date();
+			futureMonth.setMonth(futureMonth.getMonth() + 1);
+			expect(testFilter('age')(futureMonth)).toBe(undefined);
+			var futureDay = new Date();
+			futureDay.setDate(futureDay.getDate() + 1);
+			expect(testFilter('age')(futureDay)).toBe(undefined);
+			var futureMinute = new Date();
+			futureMinute.setMinutes(futureMinute.getMinutes() + 1);
+			expect(testFilter('age')(futureMinute)).toBe(undefined);
+		});
+		
+		it('should format date as 27', function() {
+			expect(testFilter('age')(new Date(1988, 10, 07))).toBe(27);
+			expect(testFilter('age')(597463200000)).toBe(27);
+		});
+	})
 });
