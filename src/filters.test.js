@@ -148,12 +148,12 @@ describe('br-filters', function() {
 			expect(testFilter('age')(undefined)).toBe(undefined);
 			expect(testFilter('age')('')).toBe(undefined);
 		});
-		
+
 		it('should be undefined if not date or time in milliseconds', function() {
 			expect(testFilter('age')('not a date')).toBe(undefined);
 			expect(testFilter('age')(true)).toBe(undefined);
 		});
-		
+
 		it('should be undefined for future birthdate', function() {
 			var futureYear = new Date();
 			futureYear.setFullYear(futureYear.getFullYear() + 1);
@@ -168,10 +168,10 @@ describe('br-filters', function() {
 			futureMinute.setMinutes(futureMinute.getMinutes() + 1);
 			expect(testFilter('age')(futureMinute)).toBe(undefined);
 		});
-		
+
 		it('should format date as 27', function() {
 			expect(testFilter('age')(new Date(1988, 10, 07))).toBe(27);
 			expect(testFilter('age')(597463200000)).toBe(27);
 		});
-	})
+	});
 });

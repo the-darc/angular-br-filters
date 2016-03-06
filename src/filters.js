@@ -88,5 +88,5 @@ m.filter('percentage', ['$filter', function($filter) {
 		 var ageDifMs = Date.now() - birthdate.getTime();
 		 var ageDate = new Date(ageDifMs); // miliseconds from epoch
 		 return Math.abs(ageDate.getUTCFullYear() - 1970);
-	 }
+	 };
 });
