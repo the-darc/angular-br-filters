@@ -20,6 +20,9 @@
     <div class="wrapper">
       <header>
         <h1>Angular-br-filters</h1>
+
+        <span class="version">v0.6.0</span>
+
         <p>An Angular library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others</p>
 
         <p class="view"><a href="https://github.com/the-darc/angular-br-filters">View the Project on GitHub <small>the-darc/angular-br-filters</small></a></p>
@@ -38,6 +41,10 @@
         <p>You can install it using bower:</p>
 
         <pre><code>$ bower install --save angular-br-filters</code></pre>
+
+        <p>Or you can install it using NPM:</p>
+
+        <pre><code>$ npm install --save angular-br-filters</code></pre>
 
         <h3>How to use it</h3>
 
@@ -69,6 +76,11 @@
           </em>
           <p><strong>NF-e access key: </strong>{{'35140111724258000157550010006882191630386000' | nfeAccessKey}}</p>
           <pre><code>'35140111724258000157550010006882191630386000' | nfeAccessKey</code></pre>
+          <p><strong>Age: </strong>{{'2010/01/05' | age}} years</p>
+          <pre><span class="code-comment">/* Use with a date string: */</span>
+<code>'2010/01/05' | age</code>
+<span class="code-comment">/* Or with a date object: */</span>
+<code>new Date('2010/01/05') | age</code></pre>
         </div>
 
       </section>
