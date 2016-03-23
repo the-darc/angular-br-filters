@@ -4,9 +4,7 @@
   "description": "An Angular library of masks applicable to several Brazilian data.",
   "main": "src/filters.js",
   "scripts": {
-    "test": "gulp test",
-    "postinstall": "bower install",
-    "postupdate": "bower update"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
