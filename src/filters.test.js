@@ -170,8 +170,11 @@ describe('br-filters', function() {
 		});
 
 		it('should format date as 27', function() {
-			expect(testFilter('age')(new Date(1988, 10, 07))).toBe(27);
-			expect(testFilter('age')(597463200000)).toBe(27);
+			var age = 27;
+			var yearInMs = 366 * 24 * 60 * 60 * 1000;
+			var born = new Date(new Date().getTime() - age*yearInMs);
+			expect(testFilter('age')(born)).toBe(age);
+			expect(testFilter('age')(born.getTime())).toBe(age);
 		});
 	});
 });

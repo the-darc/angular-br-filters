@@ -5,208 +5,268 @@
  * @link https://github.com/the-darc/angular-br-filters
  * @license MIT
  */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (root, factory) {
-	if (typeof define === 'function' && define.amd) {
-		// AMD. Register as an anonymous module.
-		define([], factory);
-	} else if (typeof exports === 'object') {
-		// Node. Does not work with strict CommonJS, but
-		// only CommonJS-like environments that support module.exports,
-		// like Node.
-		module.exports = factory();
-	} else {
-		// Browser globals (root is window)
-		root.StringMask = factory();
-	}
-}(this, function () {
-	var tokens = {
-		'0': {pattern: /\d/, _default: '0'},
-		'9': {pattern: /\d/, optional: true},
-		'#': {pattern: /\d/, optional: true, recursive: true},
-		'S': {pattern: /[a-zA-Z]/},
-		'U': {pattern: /[a-zA-Z]/, transform: function (c) { return c.toLocaleUpperCase(); }},
-		'L': {pattern: /[a-zA-Z]/, transform: function (c) { return c.toLocaleLowerCase(); }},
-		'$': {escape: true}
-	};
+(function(root, factory) {
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.StringMask = factory();
+    }
+}(this, function() {
+    var tokens = {
+        '0': {pattern: /\d/, _default: '0'},
+        '9': {pattern: /\d/, optional: true},
+        '#': {pattern: /\d/, optional: true, recursive: true},
+        'A': {pattern: /[a-zA-Z0-9]/},
+        'S': {pattern: /[a-zA-Z]/},
+        'U': {pattern: /[a-zA-Z]/, transform: function(c) { return c.toLocaleUpperCase(); }},
+        'L': {pattern: /[a-zA-Z]/, transform: function(c) { return c.toLocaleLowerCase(); }},
+        '$': {escape: true}
+    };
 
-	function isEscaped(pattern, pos) {
-		var count = 0;
-		var i = pos - 1;
-		var token = {escape: true};
-		while (i >= 0 && token && token.escape) {
-			token = tokens[pattern.charAt(i)];
-			count += token && token.escape ? 1 : 0;
-			i--;
-		}
-		return count > 0 && count%2 === 1;
-	}
+    function isEscaped(pattern, pos) {
+        var count = 0;
+        var i = pos - 1;
+        var token = {escape: true};
+        while (i >= 0 && token && token.escape) {
+            token = tokens[pattern.charAt(i)];
+            count += token && token.escape ? 1 : 0;
+            i--;
+        }
+        return count > 0 && count % 2 === 1;
+    }
 
-	function calcOptionalNumbersToUse(pattern, value) {
-		var numbersInP = pattern.replace(/[^0]/g,'').length;
-		var numbersInV = value.replace(/[^\d]/g,'').length;
-		return numbersInV - numbersInP;
-	}
+    function calcOptionalNumbersToUse(pattern, value) {
+        var numbersInP = pattern.replace(/[^0]/g,'').length;
+        var numbersInV = value.replace(/[^\d]/g,'').length;
+        return numbersInV - numbersInP;
+    }
 
-	function concatChar(text, character, options, token) {
-		if (token && typeof token.transform === 'function') character = token.transform(character);
-		if (options.reverse) return character + text;
-		return text + character;
-	}
+    function concatChar(text, character, options, token) {
+        if (token && typeof token.transform === 'function') {
+            character = token.transform(character);
+        }
+        if (options.reverse) {
+            return character + text;
+        }
+        return text + character;
+    }
 
-	function hasMoreTokens(pattern, pos, inc) {
-		var pc = pattern.charAt(pos);
-		var token = tokens[pc];
-		if (pc === '') return false;
-		return token && !token.escape ? true : hasMoreTokens(pattern, pos + inc, inc);
-	}
+    function hasMoreTokens(pattern, pos, inc) {
+        var pc = pattern.charAt(pos);
+        var token = tokens[pc];
+        if (pc === '') {
+            return false;
+        }
+        return token && !token.escape ? true : hasMoreTokens(pattern, pos + inc, inc);
+    }
 
-	function insertChar(text, char, position) {
-		var t = text.split('');
-		t.splice(position >= 0 ? position: 0, 0, char);
-		return t.join('');
-	}
+    function hasMoreRecursiveTokens(pattern, pos, inc) {
+        var pc = pattern.charAt(pos);
+        var token = tokens[pc];
+        if (pc === '') {
+            return false;
+        }
+        return token && token.recursive ? true : hasMoreRecursiveTokens(pattern, pos + inc, inc);
+    }
 
-	function StringMask(pattern, opt) {
-		this.options = opt || {};
-		this.options = {
-			reverse: this.options.reverse || false,
-			usedefaults: this.options.usedefaults || this.options.reverse
-		};
-		this.pattern = pattern;
-	}
+    function insertChar(text, char, position) {
+        var t = text.split('');
+        t.splice(position, 0, char);
+        return t.join('');
+    }
 
-	StringMask.prototype.process = function proccess(value) {
-		if (!value) return '';
-		value = value + '';
-		var pattern2 = this.pattern;
-		var valid = true;
-		var formatted = '';
-		var valuePos = this.options.reverse ? value.length - 1 : 0;
-		var optionalNumbersToUse = calcOptionalNumbersToUse(pattern2, value);
-		var escapeNext = false;
-		var recursive = [];
-		var inRecursiveMode = false;
+    function StringMask(pattern, opt) {
+        this.options = opt || {};
+        this.options = {
+            reverse: this.options.reverse || false,
+            usedefaults: this.options.usedefaults || this.options.reverse
+        };
+        this.pattern = pattern;
+    }
 
-		var steps = {
-			start: this.options.reverse ? pattern2.length - 1 : 0,
-			end: this.options.reverse ? -1 : pattern2.length,
-			inc: this.options.reverse ? -1 : 1
-		};
+    StringMask.prototype.process = function proccess(value) {
+        if (!value) {
+            return {result: '', valid: false};
+        }
+        value = value + '';
+        var pattern2 = this.pattern;
+        var valid = true;
+        var formatted = '';
+        var valuePos = this.options.reverse ? value.length - 1 : 0;
+        var patternPos = 0;
+        var optionalNumbersToUse = calcOptionalNumbersToUse(pattern2, value);
+        var escapeNext = false;
+        var recursive = [];
+        var inRecursiveMode = false;
 
-		function continueCondition(options) {
-			if (!inRecursiveMode && hasMoreTokens(pattern2, i, steps.inc)) {
-				return true;
-			} else if (!inRecursiveMode) {
-				inRecursiveMode = recursive.length > 0;
-			}
+        var steps = {
+            start: this.options.reverse ? pattern2.length - 1 : 0,
+            end: this.options.reverse ? -1 : pattern2.length,
+            inc: this.options.reverse ? -1 : 1
+        };
 
-			if (inRecursiveMode) {
-				var pc = recursive.shift();
-				recursive.push(pc);
-				if (options.reverse && valuePos >= 0) {
-					i++;
-					pattern2 = insertChar(pattern2, pc, i);
-					return true;
-				} else if (!options.reverse && valuePos < value.length) {
-					pattern2 = insertChar(pattern2, pc, i);
-					return true;
-				}
-			}
-			return i < pattern2.length && i >= 0;
-		}
+        function continueCondition(options) {
+            if (!inRecursiveMode && !recursive.length && hasMoreTokens(pattern2, patternPos, steps.inc)) {
+                // continue in the normal iteration
+                return true;
+            } else if (!inRecursiveMode && recursive.length &&
+                hasMoreRecursiveTokens(pattern2, patternPos, steps.inc)) {
+                // continue looking for the recursive tokens
+                // Note: all chars in the patterns after the recursive portion will be handled as static string
+                return true;
+            } else if (!inRecursiveMode) {
+                // start to handle the recursive portion of the pattern
+                inRecursiveMode = recursive.length > 0;
+            }
 
-		for (var i = steps.start; continueCondition(this.options); i = i + steps.inc) {
-			var pc = pattern2.charAt(i);
-			var vc = value.charAt(valuePos);
-			var token = tokens[pc];
-			if (!inRecursiveMode || vc) {
-				if (this.options.reverse && isEscaped(pattern2, i)) {
-					formatted = concatChar(formatted, pc, this.options, token);
-					i = i + steps.inc;
-					continue;
-				} else if (!this.options.reverse && escapeNext) {
-					formatted = concatChar(formatted, pc, this.options, token);
-					escapeNext = false;
-					continue;
-				} else if (!this.options.reverse && token && token.escape) {
-					escapeNext = true;
-					continue;
-				}
-			}
+            if (inRecursiveMode) {
+                var pc = recursive.shift();
+                recursive.push(pc);
+                if (options.reverse && valuePos >= 0) {
+                    patternPos++;
+                    pattern2 = insertChar(pattern2, pc, patternPos);
+                    return true;
+                } else if (!options.reverse && valuePos < value.length) {
+                    pattern2 = insertChar(pattern2, pc, patternPos);
+                    return true;
+                }
+            }
+            return patternPos < pattern2.length && patternPos >= 0;
+        }
 
-			if (!inRecursiveMode && token && token.recursive) {
-				recursive.push(pc);
-			} else if (inRecursiveMode && !vc) {
-				if (!token || !token.recursive) formatted = concatChar(formatted, pc, this.options, token);
-				continue;
-			} else if (recursive.length > 0 && token && !token.recursive) {
-				// Recursive tokens most be the last tokens of the pattern
-				valid = false;
-				continue;
-			} else if (!inRecursiveMode && recursive.length > 0 && !vc) {
-				continue;
-			}
+        /**
+         * Iterate over the pattern's chars parsing/matching the input value chars
+         * until the end of the pattern. If the pattern ends with recursive chars
+         * the iteration will continue until the end of the input value.
+         *
+         * Note: The iteration must stop if an invalid char is found.
+         */
+        for (patternPos = steps.start; continueCondition(this.options); patternPos = patternPos + steps.inc) {
+            // Value char
+            var vc = value.charAt(valuePos);
+            // Pattern char to match with the value char
+            var pc = pattern2.charAt(patternPos);
 
-			if (!token) {
-				formatted = concatChar(formatted, pc, this.options, token);
-				if (!inRecursiveMode && recursive.length) {
-					recursive.push(pc);
-				}
-			} else if (token.optional) {
-				if (token.pattern.test(vc) && optionalNumbersToUse) {
-					formatted = concatChar(formatted, vc, this.options, token);
-					valuePos = valuePos + steps.inc;
-					optionalNumbersToUse--;
-				} else if (recursive.length > 0 && vc) {
-					valid = false;
-					break;
-				}
-			} else if (token.pattern.test(vc)) {
-				formatted = concatChar(formatted, vc, this.options, token);
-				valuePos = valuePos + steps.inc;
-			} else if (!vc && token._default && this.options.usedefaults) {
-				formatted = concatChar(formatted, token._default, this.options, token);
-			} else {
-				valid = false;
-				break;
-			}
-		}
+            var token = tokens[pc];
+            if (recursive.length && token && !token.recursive) {
+                // In the recursive portion of the pattern: tokens not recursive must be seen as static chars
+                token = null;
+            }
 
-		return {result: formatted, valid: valid};
-	};
+            // 1. Handle escape tokens in pattern
+            // go to next iteration: if the pattern char is a escape char or was escaped
+            if (!inRecursiveMode || vc) {
+                if (this.options.reverse && isEscaped(pattern2, patternPos)) {
+                    // pattern char is escaped, just add it and move on
+                    formatted = concatChar(formatted, pc, this.options, token);
+                    // skip escape token
+                    patternPos = patternPos + steps.inc;
+                    continue;
+                } else if (!this.options.reverse && escapeNext) {
+                    // pattern char is escaped, just add it and move on
+                    formatted = concatChar(formatted, pc, this.options, token);
+                    escapeNext = false;
+                    continue;
+                } else if (!this.options.reverse && token && token.escape) {
+                    // mark to escape the next pattern char
+                    escapeNext = true;
+                    continue;
+                }
+            }
 
-	StringMask.prototype.apply = function(value) {
-		return this.process(value).result;
-	};
+            // 2. Handle recursive tokens in pattern
+            // go to next iteration: if the value str is finished or
+            //                       if there is a normal token in the recursive portion of the pattern
+            if (!inRecursiveMode && token && token.recursive) {
+                // save it to repeat in the end of the pattern and handle the value char now
+                recursive.push(pc);
+            } else if (inRecursiveMode && !vc) {
+                // in recursive mode but value is finished. Add the pattern char if it is not a recursive token
+                formatted = concatChar(formatted, pc, this.options, token);
+                continue;
+            } else if (!inRecursiveMode && recursive.length > 0 && !vc) {
+                // recursiveMode not started but already in the recursive portion of the pattern
+                continue;
+            }
 
-	StringMask.prototype.validate = function(value) {
-		return this.process(value).valid;
-	};
+            // 3. Handle the value
+            // break iterations: if value is invalid for the given pattern
+            if (!token) {
+                // add char of the pattern
+                formatted = concatChar(formatted, pc, this.options, token);
+                if (!inRecursiveMode && recursive.length) {
+                    // save it to repeat in the end of the pattern
+                    recursive.push(pc);
+                }
+            } else if (token.optional) {
+                // if token is optional, only add the value char if it matchs the token pattern
+                //                       if not, move on to the next pattern char
+                if (token.pattern.test(vc) && optionalNumbersToUse) {
+                    formatted = concatChar(formatted, vc, this.options, token);
+                    valuePos = valuePos + steps.inc;
+                    optionalNumbersToUse--;
+                } else if (recursive.length > 0 && vc) {
+                    valid = false;
+                    break;
+                }
+            } else if (token.pattern.test(vc)) {
+                // if token isn't optional the value char must match the token pattern
+                formatted = concatChar(formatted, vc, this.options, token);
+                valuePos = valuePos + steps.inc;
+            } else if (!vc && token._default && this.options.usedefaults) {
+                // if the token isn't optional and has a default value, use it if the value is finished
+                formatted = concatChar(formatted, token._default, this.options, token);
+            } else {
+                // the string value don't match the given pattern
+                valid = false;
+                break;
+            }
+        }
 
-	StringMask.process = function(value, pattern, options) {
-		return new StringMask(pattern, options).process(value);
-	};
+        return {result: formatted, valid: valid};
+    };
 
-	StringMask.apply = function(value, pattern, options) {
-		return new StringMask(pattern, options).apply(value);
-	};
+    StringMask.prototype.apply = function(value) {
+        return this.process(value).result;
+    };
 
-	StringMask.validate = function(value, pattern, options) {
-		return new StringMask(pattern, options).validate(value);
-	};
+    StringMask.prototype.validate = function(value) {
+        return this.process(value).valid;
+    };
 
-	return StringMask;
+    StringMask.process = function(value, pattern, options) {
+        return new StringMask(pattern, options).process(value);
+    };
+
+    StringMask.apply = function(value, pattern, options) {
+        return new StringMask(pattern, options).apply(value);
+    };
+
+    StringMask.validate = function(value, pattern, options) {
+        return new StringMask(pattern, options).validate(value);
+    };
+
+    return StringMask;
 }));
 
 },{}],2:[function(require,module,exports){
 /**
  * br-masks
  * A library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
- * @version v0.4.0
+ * @version v0.5.0
  * @link http://github.com/the-darc/br-masks
  * @license MIT
  */
 (function (root, factory) {
+   /* istanbul ignore next */
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(['string-mask'], factory);
@@ -220,6 +280,7 @@
 		root.BrM = factory(root.StringMask);
 	}
 }(this, function (StringMask) {
+   /* istanbul ignore if */
 	if (!StringMask) {
 		throw new Error('StringMask not found');
 	}
@@ -231,6 +292,16 @@ var CEP = function(value) {
 	}
 	var processed = cepMask.process(value);
 	return processed.result;
+};
+
+/*exported CNPJBASE */
+var CNPJBASE = function(value) {
+	if(!value) {
+		return value;
+	}
+	var cnpjBasePattern = new StringMask('00.000.000');
+	var formatedValue = cnpjBasePattern.apply(value);
+	return formatedValue;
 };
 
 /*exported CNPJ */
@@ -375,7 +446,8 @@ var NFEACCESSKEY = function(value) {
 /*exported PHONE */
 var PHONE = function(value) {
 	var phoneMask8D = new StringMask('(00) 0000-0000'),
-		phoneMask9D = new StringMask('(00) 00000-0000');
+		phoneMask9D = new StringMask('(00) 00000-0000'),
+		phoneMask0800 = new StringMask('0000-000-0000');
 
 	if(!value) {
 		return value;
@@ -383,7 +455,9 @@ var PHONE = function(value) {
 
 	var formatedValue;
 	value = value + '';
-	if(value.length < 11){
+	if (value.indexOf('0800') === 0) {
+			formatedValue = phoneMask0800.apply(value);
+	}else if(value.length < 11){
 		formatedValue = phoneMask8D.apply(value);
 	}else{
 		formatedValue = phoneMask9D.apply(value);
@@ -396,6 +470,7 @@ var PHONE = function(value) {
 		ie: IE,
 		cpf: CPF,
 		cnpj: CNPJ,
+       cnpjBase: CNPJBASE,
 		phone: PHONE,
 		cep: CEP,
 		finance: FINANCE,

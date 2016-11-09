@@ -3,13 +3,11 @@ var gulp = require('gulp'),
 	browserify = require('browserify'),
 	source = require('vinyl-source-stream'),
 	buffer = require('vinyl-buffer'),
-	karma = require('karma').server,
 	jshintReporter = require('jshint-stylish'),
 	pkg = require(path.join(__dirname, 'package.json')),
 	plugins = require('gulp-load-plugins')({
 		config: path.join(__dirname, 'package.json')
-	}),
-	fs = require('fs');
+	});
 
 var config = {
 	src: {
@@ -57,31 +55,3 @@ gulp.task('build', function() {
 gulp.task('default', ['jshint', 'build'], function() {
 	gulp.watch(config.src.files, ['jshint', 'build']);
 });
-
-gulp.task('test', function(done) {
-	var karmaConfig = {
-		singleRun: true,
-		configFile: __dirname + '/config/karma.conf.js'
-	};
-
-	karma.start(karmaConfig, done);
-});
-
-gulp.task('changelog', function(done) {
-	var changelog = require('conventional-changelog');
-
-	var options = {
-		repository: pkg.homepage,
-		version: pkg.version,
-		file: path.join(__dirname, 'CHANGELOG.md')
-	};
-
-	changelog(options, function(err, log) {
-		if (err) {
-			throw err;
-		}
-
-		fs.writeFile(options.file, log, done);
-	});
-});
-
