@@ -1,9 +1,11 @@
 angular-br-filters
 ==================
-[![npm version](https://badge.fury.io/js/angular-br-filters.svg)](http://badge.fury.io/js/angular-br-filters)
-[![Bower version](https://badge.fury.io/bo/angular-br-filters.svg)](http://badge.fury.io/bo/angular-br-filters)
+[![npm version](https://img.shields.io/npm/v/angular-br-filters.svg)](https://www.npmjs.com/package/angular-br-filters) 
+[![Bower version](https://img.shields.io/bower/v/angular-br-filters.svg)](https://bower.io/search/?q=angular-br-filters) 
 [![Build Status](https://travis-ci.org/the-darc/angular-br-filters.svg)](https://travis-ci.org/the-darc/angular-br-filters)
 [![Coverage Status](https://coveralls.io/repos/the-darc/angular-br-filters/badge.svg)](https://coveralls.io/r/the-darc/angular-br-filters)
+
+[![NPM](https://nodei.co/npm/angular-br-filters.png?downloads=true&stars=true)](https://nodei.co/npm/angular-br-filters/)
 
 An Angular library of masks applicable to several Brazilian data like I.E., CNPJ, CPF and others
 
