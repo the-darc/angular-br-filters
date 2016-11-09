@@ -1,3 +1,17 @@
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/the-darc/angular-br-filters/compare/0.6.0...0.7.0) (2016-11-09)
+
+
+#### Bug Fixes
+
+* package.json: remove postinstall and postupdate from package.json ([cf42d12](https://github.com/the-darc/angular-br-filters/commit/cf42d12)), closes [#13](https://github.com/the-darc/angular-br-filters/pull/13)
+
+#### Others
+
+* Update dependencies ([e358d4d](https://github.com/the-darc/angular-br-filters/commit/e358d4d))
+* Travis-ci changed to build in node v6, v5 and v4 ([b4baba9](https://github.com/the-darc/angular-br-filters/commit/b4baba9))
+* Tests changed to use angular 1.5.x ([e358d4d](https://github.com/the-darc/angular-br-filters/commit/e358d4d))
+
 <a name"0.6.0"></a>
 ## 0.6.0 (2016-03-06)
 
