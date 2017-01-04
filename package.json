@@ -2,7 +2,7 @@
   "name": "angular-br-filters",
   "version": "0.7.0",
   "description": "An Angular library of masks applicable to several Brazilian data.",
-  "main": "src/filters.js",
+  "main": "release/angular-br-filters.js",
   "scripts": {
     "test": "karma start config/karma.conf.js",
     "release": "conventional-changelog -p angular -i CHANGELOG.md -s"
