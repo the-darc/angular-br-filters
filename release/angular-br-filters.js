@@ -445,9 +445,19 @@ var NFEACCESSKEY = function(value) {
 
 /*exported PHONE */
 var PHONE = function(value) {
-	var phoneMask8D = new StringMask('(00) 0000-0000'),
-		phoneMask9D = new StringMask('(00) 00000-0000'),
-		phoneMask0800 = new StringMask('0000-000-0000');
+	var phoneMask8D = {
+		countryCode : new StringMask('+00 (00) 0000-0000'),   // with country code
+		areaCode    : new StringMask('(00) 0000-0000'),       // with area code
+		simple      : new StringMask('0000-0000')             // without area code
+	}, phoneMask9D = {
+		countryCode : new StringMask('+00 (00) 0-0000-0000'), // with country code
+		areaCode    : new StringMask('(00) 0-0000-0000'),     // with area code
+		simple      : new StringMask('0-0000-0000')           // without area code
+	}, phoneMask0800 = {
+		countryCode : null,                                   // N/A
+		areaCode    : null,                                   // N/A
+		simple      : new StringMask('0000-000-0000')         // N/A, so it's "simple"
+	};
 
 	if(!value) {
 		return value;
@@ -456,11 +466,19 @@ var PHONE = function(value) {
 	var formatedValue;
 	value = value + '';
 	if (value.indexOf('0800') === 0) {
-			formatedValue = phoneMask0800.apply(value);
-	}else if(value.length < 11){
-		formatedValue = phoneMask8D.apply(value);
-	}else{
-		formatedValue = phoneMask9D.apply(value);
+		formatedValue = phoneMask0800.simple.apply(value);
+	} else if (value.length < 9) {
+		formatedValue = phoneMask8D.simple.apply(value) || '';
+	} else if (value.length < 10) {
+		formatedValue = phoneMask9D.simple.apply(value);
+	} else if (value.length < 11) {
+		formatedValue = phoneMask8D.areaCode.apply(value);
+	} else if (value.length < 12) {
+		formatedValue = phoneMask9D.areaCode.apply(value);
+	} else if (value.length < 13) {
+		formatedValue = phoneMask8D.countryCode.apply(value);
+	} else {
+		formatedValue = phoneMask9D.countryCode.apply(value);
 	}
 
 	return formatedValue;
